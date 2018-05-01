@@ -1,0 +1,12 @@
+form(method='POST', action='/create')
+    div
+        label(for='name') Name
+        input(id='name', name='name')
+    div
+        label(for='email') Email
+        input(id='email', name='email')
+    div
+        input(type='submit', value='Add User')
+    div
+        p= user.displayName
+        img(src= user._json.image.url)
