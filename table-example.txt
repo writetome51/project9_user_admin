@@ -1,0 +1,18 @@
+<table id='users-table'>
+  <tr>
+    <th>id</th>
+    <th>username</th>
+    <th>password</th>
+    <th>email</th>
+    <th>age</th>
+    <th>------</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+     <td><button>Edit</button><button>Delete</button></td>
+  </tr>
+</table>
