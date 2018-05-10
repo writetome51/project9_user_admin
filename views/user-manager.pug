@@ -5,3 +5,7 @@ block headContent
 
 block bodyContent
     h1 USERS
+    ul
+        each val in users
+            li
+                a(href='/users/' + val)= val
