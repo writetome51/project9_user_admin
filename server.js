@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 	console.log(data);
 	res.render('user-manager', {
 		title:'Users',
-		parsedData:data
+		users:data
 	});
 });
 

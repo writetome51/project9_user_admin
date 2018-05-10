@@ -1,12 +1,24 @@
 extends layout
+    block bodyContent
 
-block headContent
-    title= 'USERS'
+        h1 USERS
 
-block bodyContent
-    h1 USERS
+        table
+            tr
+                th='ID'
+                th='Username'
+                th='Password'
+                th='Email'
+                th='Age'
+            each val in users
+                tr
+                td=val.id
+                td=val.username
+                td=val.password
+                td=val.email
+                td=val.age
 
-    ul
-        each val in parsedData
-            li
-                span= val.username
+        ul
+            each val in users
+                li
+                    span= val.username
