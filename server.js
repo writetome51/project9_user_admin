@@ -5,10 +5,13 @@ const passport = require('passport');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const router = express.Router();
-const ajaxGet  = require("./ajax_functions").ajaxGet;
 const http = require('http');
+let data = require("./users.json");
+data = JSON.stringify(data);
+data = JSON.parse(data);
 
 let app = express();
+
 
 
 // app.use(bodyParser.json());
@@ -19,13 +22,10 @@ app.set('view engine', 'pug');
 
 app.get('/', (req, res) => {
 	// Call this...
-	http.get('users.json', ()=>{});
-	// ...instead of this:
-	ajaxGet('users.json', (users)=>{
-		res.render('user-manager', {
-			title:'Users',
-			users:users
-		});
+	console.log(data);
+	res.render('user-manager', {
+		title:'Users',
+		parsedData:data
 	});
 });
 
@@ -51,3 +51,7 @@ app.post('/create', (req, res) => {
 app.listen(3000);
 
 console.log('listening on port 3000');
+
+
+
+

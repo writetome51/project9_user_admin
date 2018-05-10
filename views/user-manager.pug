@@ -5,7 +5,8 @@ block headContent
 
 block bodyContent
     h1 USERS
+
     ul
-        each val in users
+        each val in parsedData
             li
-                a(href='/users/' + val)= val
+                span= val.username
