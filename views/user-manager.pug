@@ -19,5 +19,5 @@ block bodyContent
                 td=val.email
                 td=val.age
                 td
-                    a(onclick="editItem(#{val.id})", class="td-link"  href="")="Edit"
-                    a(onclick="editItem(#{val.id})", class="td-link"  href="")="Delete"
+                    a(class="td-link",  href=`user/${val.id}`)="Edit"
+                    a(onclick="deleteItem(#{val.id})", class="td-link"  href="")="Delete"

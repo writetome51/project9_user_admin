@@ -20,15 +20,11 @@ app.get('/', (req, res) => {
 			res.end(JSON.stringify(err));
 			return;
 		}
-		data = JSON.stringify(data.toString());
-		data = JSON.parse(data);
-		let dataType = typeof data;
-		console.log(dataType);
-
+		data = JSON.parse(data.toString());
 
 		res.render('user-manager', {
 			title: 'Users',
-			users: JSON.parse(data)
+			users: data
 		});
 	});
 });
