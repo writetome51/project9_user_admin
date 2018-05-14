@@ -1,13 +1,10 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const http = require('http');
-let data = require("./users.json");
-data = JSON.stringify(data);
-data = JSON.parse(data);
 
 let app = express();
-
 
 
 // app.use(bodyParser.json());
@@ -17,11 +14,22 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.get('/', (req, res) => {
-	// Call this...
-	console.log(data);
-	res.render('user-manager', {
-		title:'Users',
-		users:data
+	fs.readFile('./users.json', (err, data) => {
+		if (err) {
+			res.writeHead(404);
+			res.end(JSON.stringify(err));
+			return;
+		}
+		data = JSON.stringify(data.toString());
+		data = JSON.parse(data);
+		let dataType = typeof data;
+		console.log(dataType);
+
+
+		res.render('user-manager', {
+			title: 'Users',
+			users: JSON.parse(data)
+		});
 	});
 });
 
