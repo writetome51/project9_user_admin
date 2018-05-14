@@ -6,12 +6,9 @@ const http = require('http');
 
 let app = express();
 
-
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}));
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
 
 app.get('/', (req, res) => {
 	fs.readFile('./users.json', (err, data) => {
@@ -28,6 +25,16 @@ app.get('/', (req, res) => {
 		});
 	});
 });
+
+
+app.get('/delete/:id', (req, res) => {
+	deleteUserFromFile(req.params.id);
+	res.render('user-manager', {
+		title: 'Users',
+		users: data
+	});
+});
+
 
 app.get('/users/:userName', (req, res) => {
 	res.render('user-view', {userName: req.params.userName});
@@ -54,4 +61,22 @@ console.log('listening on port 3000');
 
 
 
+
+
+
+function deleteUserFromFile(id){
+	fs.readFile('./users.json', (err, data) => {
+		if (err) {
+			console.log('Could not read users file. Unexpected error.');
+			return;
+		}
+		data = JSON.parse(data.toString());
+		data.forEach((user, index)=>{
+			if (user.id === id){
+				data.splice(index, 1);
+			}
+		});
+		data = JSON.stringify(data);
+	});
+}
 

@@ -20,4 +20,4 @@ block bodyContent
                 td=val.age
                 td
                     a(class="td-link",  href=`user/${val.id}`)="Edit"
-                    a(onclick="deleteItem(#{val.id})", class="td-link"  href="")="Delete"
+                    a(class="td-link",  href=`delete/${val.id}`)="Delete"
