@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const bodyParser = require('body-parser');
 const http = require('http');
 
 let app = express();
@@ -29,10 +28,7 @@ app.get('/', (req, res) => {
 
 app.get('/delete/:id', (req, res) => {
 	deleteUserFromFile(req.params.id);
-	res.render('user-manager', {
-		title: 'Users',
-		users: data
-	});
+	res.redirect('/');
 });
 
 
@@ -52,15 +48,12 @@ app.post('/create', (req, res) => {
 		email: req.body.email
 	};
 
-	res.end(`Name: ${user.name}\nEmail: ${user.email}`)
+	res.end(`Name: ${user.name}\nEmail: ${user.email}`);
 });
 
 app.listen(3000);
 
 console.log('listening on port 3000');
-
-
-
 
 
 
@@ -71,12 +64,18 @@ function deleteUserFromFile(id){
 			return;
 		}
 		data = JSON.parse(data.toString());
-		data.forEach((user, index)=>{
-			if (user.id === id){
+		for (let index in data){
+			if (data[index].id === Number(id)){
 				data.splice(index, 1);
 			}
-		});
+		}
+
 		data = JSON.stringify(data);
+		fs.writeFile('./users.json', data, (err)=>{
+			if (!err){
+				console.log('file was successfully rewritten.');
+			}
+		});
 	});
 }
 
