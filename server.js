@@ -46,8 +46,6 @@ app.get('/add-user', (req, res) => {
 });
 
 app.post('/create', (req, res) => {
-//	console.log(req);
-
 	if (req.body.username && req.body.password && req.body.email && req.body.age) {
 		let newUser = {
 			id: req.body.id,
@@ -59,7 +57,6 @@ app.post('/create', (req, res) => {
 		addUserToFile(newUser);
 		res.redirect('/');
 	}
-
 });
 
 app.listen(3000);

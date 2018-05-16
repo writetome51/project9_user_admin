@@ -5,15 +5,15 @@ block bodyContent
     form(method='POST', action='/create')
         div
             label(for='username') Username
-            input(id='username', name='username')
+            input(id='username', name='username', required)
         div
             label(for='password') Password
-            input(type='password', id='password', name='password')
+            input(type='password', id='password', name='password' , required)
         div
             label(for='email') Email
-            input(type='email', id='email', name='email')
+            input(type='email', id='email', name='email', required)
         div
             label(for='age') Age
-            input(type='number', id='age', name='age')
+            input(type='number', id='age', name='age', required)
         div
             input(type='submit', value='Add User')
