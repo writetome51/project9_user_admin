@@ -1,0 +1,19 @@
+extends layout
+
+block bodyContent
+
+    form(method='POST', action='')
+        div
+            label(for='username') Username
+            input(id='username', name='username', required, value=user.username)
+        div
+            label(for='password') Password
+            input(type='password', id='password', name='password' , required, value=user.password)
+        div
+            label(for='email') Email
+            input(type='email', id='email', name='email', required, value=user.email)
+        div
+            label(for='age') Age
+            input(type='number', id='age', name='age', required, value=user.age)
+        div
+            input(type='submit', value='Save Changes')

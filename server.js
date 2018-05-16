@@ -36,6 +36,23 @@ app.get('/delete/:id', (req, res) => {
 });
 
 
+app.get('/edit/:id', (req, res) => {
+	fs.readFile('./users.json', (err, data) => {
+		if (err) {
+			console.log('Could not read users file. Unexpected error.');
+			return;
+		}
+		data = JSON.parse(data.toString());
+
+		for (let index in data) {
+			if (data[index].id === Number(req.params.id)) {
+				res.render('edit-user', {user: data[index]});
+			}
+		}
+	});
+});
+
+
 app.get('/user/:id', (req, res) => {
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
@@ -54,7 +71,7 @@ app.get('/user/:id', (req, res) => {
 
 
 app.get('/add-user', (req, res) => {
-	res.render('add-user', {user: req.user});
+	res.render('add-user', {});
 });
 
 app.post('/create', (req, res) => {
