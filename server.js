@@ -32,8 +32,8 @@ app.get('/delete/:id', (req, res) => {
 });
 
 
-app.get('/users/:userName', (req, res) => {
-	res.render('user-view', {userName: req.params.userName});
+app.get('/users/:id', (req, res) => {
+	res.render('user-view', {userName: req.params.id});
 });
 
 
@@ -66,7 +66,7 @@ function deleteUserFromFile(id){
 		data = JSON.parse(data.toString());
 		for (let index in data){
 			if (data[index].id === Number(id)){
-				data.splice(index, 1);
+				data.splice(index, 1); // removes user.
 			}
 		}
 
@@ -79,3 +79,22 @@ function deleteUserFromFile(id){
 	});
 }
 
+
+function addUserToFile(newUser){
+	fs.readFile('./users.json', (err, data) => {
+		if (err) {
+			console.log('Could not read users file. Unexpected error.');
+			return;
+		}
+		data = JSON.parse(data.toString());
+
+		data.push(newUser);
+
+		data = JSON.stringify(data);
+		fs.writeFile('./users.json', data, (err)=>{
+			if (!err){
+				console.log('file was successfully rewritten.');
+			}
+		});
+	});
+}
