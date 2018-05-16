@@ -38,7 +38,6 @@ app.get('/users/:id', (req, res) => {
 
 
 app.get('/form', (req, res) => {
-	console.log(req.user);
 	res.render('form', {user: req.user});
 });
 
@@ -56,31 +55,27 @@ app.listen(3000);
 console.log('listening on port 3000');
 
 
-
 function deleteUserFromFile(id){
-	fs.readFile('./users.json', (err, data) => {
-		if (err) {
-			console.log('Could not read users file. Unexpected error.');
-			return;
-		}
-		data = JSON.parse(data.toString());
+	readFile_changeData_writeDataToFile((data)=>{
 		for (let index in data){
 			if (data[index].id === Number(id)){
 				data.splice(index, 1); // removes user.
 			}
 		}
-
-		data = JSON.stringify(data);
-		fs.writeFile('./users.json', data, (err)=>{
-			if (!err){
-				console.log('file was successfully rewritten.');
-			}
-		});
+		return data;
 	});
 }
 
 
 function addUserToFile(newUser){
+	readFile_changeData_writeDataToFile((data)=>{
+		data.push(newUser);
+		return data;
+	});
+}
+
+
+function readFile_changeData_writeDataToFile(changeData){
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
 			console.log('Could not read users file. Unexpected error.');
@@ -88,7 +83,7 @@ function addUserToFile(newUser){
 		}
 		data = JSON.parse(data.toString());
 
-		data.push(newUser);
+		data = changeData(data);
 
 		data = JSON.stringify(data);
 		fs.writeFile('./users.json', data, (err)=>{
