@@ -19,7 +19,8 @@ block bodyContent
                 td=val.email
                 td=val.age
                 td
-                    a(class="td-link",  href=`user/${val.id}`)="Edit"
+                    a(class="td-link",  href=`user/${val.id}`)="View"
+                    a(class="td-link",  href=`edit/${val.id}`)="Edit"
                     a(class="td-link",  href=`delete/${val.id}`)="Delete"
 
     div(class="needs-margin")

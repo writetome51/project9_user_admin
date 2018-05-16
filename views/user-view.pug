@@ -1,0 +1,23 @@
+extends layout
+block bodyContent
+
+    h1 USER
+
+    table
+        tr
+            th='ID'
+            th='Username'
+            th='Password'
+            th='Email'
+            th='Age'
+
+
+            tr
+                td=user.id
+                td=user.username
+                td=user.password
+                td=user.email
+                td=user.age
+
+    div(class="needs-margin")
+        a(class="needs-margin", href=`/`)="Return to Users List"

@@ -36,8 +36,20 @@ app.get('/delete/:id', (req, res) => {
 });
 
 
-app.get('/users/:id', (req, res) => {
-	res.render('user-view', {userName: req.params.id});
+app.get('/user/:id', (req, res) => {
+	fs.readFile('./users.json', (err, data) => {
+		if (err) {
+			console.log('Could not read users file. Unexpected error.');
+			return;
+		}
+		data = JSON.parse(data.toString());
+
+		for (let index in data) {
+			if (data[index].id === Number(req.params.id)) {
+				res.render('user-view', {user: data[index]});
+			}
+		}
+	});
 });
 
 
@@ -55,8 +67,8 @@ app.post('/create', (req, res) => {
 			age: req.body.age
 		};
 		addUserToFile(newUser);
-		res.redirect('/');
 	}
+	res.redirect('/');
 });
 
 app.listen(3000);
