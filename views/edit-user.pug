@@ -2,8 +2,9 @@ extends layout
 
 block bodyContent
 
-    form(method='POST', action='')
+    form(method='POST', action='/change-user')
         div
+            input(id='id', name='id', required, value=user.id, hidden)
             label(for='username') Username
             input(id='username', name='username', required, value=user.username)
         div

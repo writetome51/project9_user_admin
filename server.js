@@ -74,10 +74,26 @@ app.get('/add-user', (req, res) => {
 	res.render('add-user', {});
 });
 
+
+app.post('/change-user', (req, res)=>{
+	if (req.body.username && req.body.password &&
+		req.body.email && req.body.age && req.body.id) {
+		let newVersion = {
+			id: Number(req.body.id),
+			username: req.body.username,
+			password: req.body.password,
+			email: req.body.email,
+			age: Number(req.body.age)
+		};
+		saveChangesToUser(req.body.id, newVersion);
+	}
+	res.redirect('/');
+});
+
+
 app.post('/create', (req, res) => {
 	if (req.body.username && req.body.password && req.body.email && req.body.age) {
 		let newUser = {
-			id: req.body.id,
 			username: req.body.username,
 			password: req.body.password,
 			email: req.body.email,
@@ -116,6 +132,20 @@ function addUserToFile(newUser) {
 }
 
 
+function saveChangesToUser(id, newVersion){
+	readFile_changeData_writeDataToFile((data)=>{
+		for (let index in data) {
+			if (data[index].id === Number(id)) {
+				let changedUser = modifyObject(data[index], newVersion);
+				data.splice(index, 1);
+				data.splice(index, 0, changedUser);
+				return data;
+			}
+		}
+	});
+}
+
+
 function readFile_changeData_writeDataToFile(changeData) {
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
@@ -133,4 +163,12 @@ function readFile_changeData_writeDataToFile(changeData) {
 			}
 		});
 	});
+}
+
+
+function modifyObject(obj, propertiesAndValuesToModify) {
+	for (let prop in propertiesAndValuesToModify) {
+		obj[prop] = propertiesAndValuesToModify[prop];
+	}
+	return obj;
 }
