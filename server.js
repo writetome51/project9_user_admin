@@ -97,7 +97,7 @@ app.post('/create', (req, res) => {
 			username: req.body.username,
 			password: req.body.password,
 			email: req.body.email,
-			age: req.body.age
+			age: Number(req.body.age)
 		};
 		addUserToFile(newUser);
 	}
