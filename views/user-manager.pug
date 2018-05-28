@@ -5,7 +5,8 @@ block bodyContent
 
     table
         tr
-            th='ID'
+            th='Last Name'
+            th='First Name'
             th='Username'
             th='Password'
             th='Email'
@@ -13,15 +14,16 @@ block bodyContent
             th='-----------'
         each val in users
             tr
-                td=val.id
+                td=val.lastName
+                td=val.firstName
                 td=val.username
                 td=val.password
                 td=val.email
                 td=val.age
                 td
-                    a(class="td-link",  href=`user/${val.id}`)="View"
-                    a(class="td-link",  href=`edit/${val.id}`)="Edit"
-                    a(class="td-link",  href=`delete/${val.id}`)="Delete"
+                    a(class="td-link",  href=`user/${val.email}`)="View"
+                    a(class="td-link",  href=`edit/${val.email}`)="Edit"
+                    a(class="td-link",  href=`delete/${val.email}`)="Delete"
 
     div(class="needs-margin")
         a(class="needs-margin", href=`/add-user`)="Add User"

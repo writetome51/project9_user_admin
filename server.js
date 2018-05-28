@@ -8,11 +8,11 @@ const dbName = 'user_admin';
 const url = `mongodb://localhost:27017/${dbName}`;
 const assert = require('assert');
 
+/*********
+ MongoClient.connect(
+ url, {useNewUrlParser: true},
 
-MongoClient.connect(
-	url, {useNewUrlParser: true},
-
-	function (err, client) { // client is instance of MongoClient
+ function (err, client) { // client is instance of MongoClient
 		assert.equal(null, err);
 		console.log("Connected successfully to database.");
 
@@ -20,55 +20,67 @@ MongoClient.connect(
 
 		const users = db.collection('users');
 
+		users.updateOne({},{$set:{"username":"hmmm"}});
+
 		client.close();
 	}
-);
+ );
+ **********/
 
-/***********
 
- let app = express();
+let app = express();
 
- app.set('views', path.join(__dirname, 'views'));
- app.set('view engine', 'pug');
- app.use(bodyParser.urlencoded({
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
 
- app.get('/', (req, res) => {
+app.get('/', (req, res) => {
+	MongoClient.connect(
+		url, {useNewUrlParser: true},
 
-	var data = JSON.parse(data.toString());
-	res.render('user-manager', {
-		title: 'Users',
-		users: data
-	});
+		function (err, client) { // client is instance of MongoClient
+			assert.equal(null, err);
+			console.log("Connected successfully to database.");
+
+			const db = client.db();
+			const users = db.collection('users');
+
+			let result = users.find();
+			result.toArray((err, docs) => {
+				assert.equal(null, err);
+				res.render('user-manager', {
+					title: 'Users',
+					users: docs
+				});
+			});
+
+			client.close();
+		}
+	);
 });
 
 
- app.get('/delete/:id', (req, res) => {
-	deleteUserFromFile(req.params.id);
+app.get('/delete/:email', (req, res) => {
+	deleteUserFromFile(req.params.email);
 	res.redirect('/');
 });
 
 
- app.get('/edit/:id', (req, res) => {
-	fs.readFile('./users.json', (err, data) => {
-		if (err) {
-			console.log('Could not read users file. Unexpected error.');
-			return;
-		}
-		data = JSON.parse(data.toString());
+app.get('/edit/:email', (req, res) => {
+	data = JSON.parse(data.toString());
 
-		for (let index in data) {
-			if (data[index].id === Number(req.params.id)) {
-				res.render('edit-user', {user: data[index]});
-			}
+	for (let index in data) {
+		if (data[index].email === String(req.params.email)) {
+			res.render('edit-user', {user: data[index]});
 		}
-	});
+	}
 });
 
 
- app.get('/user/:id', (req, res) => {
+app.get('/user/:email', (req, res) => {
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
 			console.log('Could not read users file. Unexpected error.');
@@ -77,7 +89,7 @@ MongoClient.connect(
 		data = JSON.parse(data.toString());
 
 		for (let index in data) {
-			if (data[index].id === Number(req.params.id)) {
+			if (data[index].email === Number(req.params.email)) {
 				res.render('user-view', {user: data[index]});
 			}
 		}
@@ -85,12 +97,12 @@ MongoClient.connect(
 });
 
 
- app.get('/add-user', (req, res) => {
+app.get('/add-user', (req, res) => {
 	res.render('add-user', {});
 });
 
 
- app.post('/change-user', (req, res) => {
+app.post('/change-user', (req, res) => {
 	if (req.body.username && req.body.password &&
 		req.body.email && req.body.age && req.body.id) {
 		let newVersion = {
@@ -106,7 +118,7 @@ MongoClient.connect(
 });
 
 
- app.post('/create', (req, res) => {
+app.post('/create', (req, res) => {
 	if (req.body.username && req.body.password && req.body.email && req.body.age) {
 		let newUser = {
 			username: req.body.username,
@@ -119,12 +131,12 @@ MongoClient.connect(
 	res.redirect('/');
 });
 
- app.listen(3000);
+app.listen(3000);
 
- console.log('listening on port 3000');
+console.log('listening on port 3000');
 
 
- function deleteUserFromFile(id) {
+function deleteUserFromFile(id) {
 	readFile_changeData_writeDataToFile((data) => {
 		for (let index in data) {
 			if (data[index].id === Number(id)) {
@@ -136,7 +148,7 @@ MongoClient.connect(
 }
 
 
- function addUserToFile(newUser) {
+function addUserToFile(newUser) {
 	readFile_changeData_writeDataToFile((data) => {
 		let lastUser = data[data.length - 1];
 		let highestID = lastUser.id;
@@ -147,7 +159,7 @@ MongoClient.connect(
 }
 
 
- function saveChangesToUser(id, newVersion) {
+function saveChangesToUser(id, newVersion) {
 	readFile_changeData_writeDataToFile((data) => {
 		for (let index in data) {
 			if (data[index].id === Number(id)) {
@@ -161,31 +173,25 @@ MongoClient.connect(
 }
 
 
- function readFile_changeData_writeDataToFile(changeData) {
-	fs.readFile('./users.json', (err, data) => {
-		if (err) {
-			console.log('Could not read users file. Unexpected error.');
-			return;
+function readFile_changeData_writeDataToFile(changeData) {
+
+	data = JSON.parse(data.toString());
+
+	data = changeData(data);
+
+	data = JSON.stringify(data);
+	fs.writeFile('./users.json', data, (err) => {
+		if (!err) {
+			console.log('file was successfully rewritten.');
 		}
-		data = JSON.parse(data.toString());
-
-		data = changeData(data);
-
-		data = JSON.stringify(data);
-		fs.writeFile('./users.json', data, (err) => {
-			if (!err) {
-				console.log('file was successfully rewritten.');
-			}
-		});
 	});
+
 }
 
 
- function modifyObject(obj, propertiesAndValuesToModify) {
+function modifyObject(obj, propertiesAndValuesToModify) {
 	for (let prop in propertiesAndValuesToModify) {
 		obj[prop] = propertiesAndValuesToModify[prop];
 	}
 	return obj;
 }
-
- *********/
