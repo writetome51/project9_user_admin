@@ -3,7 +3,10 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const bodyParser = require("body-parser");
-const mongodb =require('mongodb');
+const MongoClient = require('mongodb').MongoClient;
+const url = 'mongodb://localhost:27017';
+const dbName = 'user_admin';
+const assert = require('assert');
 
 let app = express();
 
@@ -15,18 +18,11 @@ app.use(bodyParser.urlencoded({
 
 
 app.get('/', (req, res) => {
-	fs.readFile('./users.json', (err, data) => {
-		if (err) {
-			res.writeHead(404);
-			res.end(JSON.stringify(err));
-			return;
-		}
-		data = JSON.parse(data.toString());
 
-		res.render('user-manager', {
-			title: 'Users',
-			users: data
-		});
+	var data = JSON.parse(data.toString());
+	res.render('user-manager', {
+		title: 'Users',
+		users: data
 	});
 });
 
