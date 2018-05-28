@@ -8,23 +8,26 @@ const dbName = 'user_admin';
 const url = `mongodb://localhost:27017/${dbName}`;
 const assert = require('assert');
 
-// Use connect method to connect to the server
+
 MongoClient.connect(
 	url, {useNewUrlParser: true},
 
-	function (err, db) {
+	function (err, client) { // client is instance of MongoClient
 		assert.equal(null, err);
 		console.log("Connected successfully to database.");
 
-		/*
-		insertDocuments(db, function () {
-			findDocuments(db, function () {
-				client.close();
+		const db = client.db();
+		const collectionNames = db.collections((err, collections) => {
+			collections.forEach((collection) => {
+				console.log(collection.s.name);
 			});
 		});
-		*/
 
-	});
+		const users = db.collection('users');
+
+		client.close();
+	}
+);
 
 /***********
 
