@@ -17,11 +17,6 @@ MongoClient.connect(
 		console.log("Connected successfully to database.");
 
 		const db = client.db();
-		const collectionNames = db.collections((err, collections) => {
-			collections.forEach((collection) => {
-				console.log(collection.s.name);
-			});
-		});
 
 		const users = db.collection('users');
 
