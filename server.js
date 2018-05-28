@@ -38,6 +38,20 @@ app.use(bodyParser.urlencoded({
 
 
 app.get('/', (req, res) => {
+	getUsersAnd((users)=>{
+		let result = users.find();
+		result.toArray((err, docs) => {
+			assert.equal(null, err);
+			res.render('user-manager', {
+				title: 'Users',
+				users: docs
+			});
+		});
+	});
+});
+
+
+function getUsersAnd(manipulateUsers){
 	MongoClient.connect(
 		url, {useNewUrlParser: true},
 
@@ -48,19 +62,12 @@ app.get('/', (req, res) => {
 			const db = client.db();
 			const users = db.collection('users');
 
-			let result = users.find();
-			result.toArray((err, docs) => {
-				assert.equal(null, err);
-				res.render('user-manager', {
-					title: 'Users',
-					users: docs
-				});
-			});
+			manipulateUsers(users);
 
 			client.close();
 		}
 	);
-});
+}
 
 
 app.get('/delete/:email', (req, res) => {
@@ -81,11 +88,6 @@ app.get('/edit/:email', (req, res) => {
 
 
 app.get('/user/:email', (req, res) => {
-	fs.readFile('./users.json', (err, data) => {
-		if (err) {
-			console.log('Could not read users file. Unexpected error.');
-			return;
-		}
 		data = JSON.parse(data.toString());
 
 		for (let index in data) {
@@ -93,7 +95,6 @@ app.get('/user/:email', (req, res) => {
 				res.render('user-view', {user: data[index]});
 			}
 		}
-	});
 });
 
 
