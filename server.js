@@ -103,11 +103,11 @@ app.get('/add-user', (req, res) => {
 
 
 app.post('/change-user', (req, res) => {
-	if (req.body.username && req.body.password &&
-		req.body.email && req.body.age && req.body.id) {
+	if (req.body.firstName && req.body.lastName  && req.body.password &&
+		req.body.email && req.body.age) {
 		let newVersion = {
-			id: Number(req.body.id),
-			username: req.body.username,
+			lastName:req.body.lastName,
+			firstName:req.body.firstName,
 			password: req.body.password,
 			email: req.body.email,
 			age: Number(req.body.age)
@@ -119,9 +119,11 @@ app.post('/change-user', (req, res) => {
 
 
 app.post('/create', (req, res) => {
-	if (req.body.username && req.body.password && req.body.email && req.body.age) {
+	if (req.body.firstName && req.body.lastName  && req.body.password &&
+		req.body.email && req.body.age) {
 		let newUser = {
-			username: req.body.username,
+			lastName:req.body.lastName,
+			firstName:req.body.firstName,
 			password: req.body.password,
 			email: req.body.email,
 			age: Number(req.body.age)
@@ -170,22 +172,6 @@ function saveChangesToUser(id, newVersion) {
 			}
 		}
 	});
-}
-
-
-function readFile_changeData_writeDataToFile(changeData) {
-
-	data = JSON.parse(data.toString());
-
-	data = changeData(data);
-
-	data = JSON.stringify(data);
-	fs.writeFile('./users.json', data, (err) => {
-		if (!err) {
-			console.log('file was successfully rewritten.');
-		}
-	});
-
 }
 
 
