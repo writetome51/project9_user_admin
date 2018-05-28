@@ -4,20 +4,40 @@ const fs = require('fs');
 const http = require('http');
 const bodyParser = require("body-parser");
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
 const dbName = 'user_admin';
+const url = `mongodb://localhost:27017/${dbName}`;
 const assert = require('assert');
 
-let app = express();
+// Use connect method to connect to the server
+MongoClient.connect(
+	url, {useNewUrlParser: true},
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-app.use(bodyParser.urlencoded({
+	function (err, db) {
+		assert.equal(null, err);
+		console.log("Connected successfully to database.");
+
+		/*
+		insertDocuments(db, function () {
+			findDocuments(db, function () {
+				client.close();
+			});
+		});
+		*/
+
+	});
+
+/***********
+
+ let app = express();
+
+ app.set('views', path.join(__dirname, 'views'));
+ app.set('view engine', 'pug');
+ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
 
-app.get('/', (req, res) => {
+ app.get('/', (req, res) => {
 
 	var data = JSON.parse(data.toString());
 	res.render('user-manager', {
@@ -27,13 +47,13 @@ app.get('/', (req, res) => {
 });
 
 
-app.get('/delete/:id', (req, res) => {
+ app.get('/delete/:id', (req, res) => {
 	deleteUserFromFile(req.params.id);
 	res.redirect('/');
 });
 
 
-app.get('/edit/:id', (req, res) => {
+ app.get('/edit/:id', (req, res) => {
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
 			console.log('Could not read users file. Unexpected error.');
@@ -50,7 +70,7 @@ app.get('/edit/:id', (req, res) => {
 });
 
 
-app.get('/user/:id', (req, res) => {
+ app.get('/user/:id', (req, res) => {
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
 			console.log('Could not read users file. Unexpected error.');
@@ -67,12 +87,12 @@ app.get('/user/:id', (req, res) => {
 });
 
 
-app.get('/add-user', (req, res) => {
+ app.get('/add-user', (req, res) => {
 	res.render('add-user', {});
 });
 
 
-app.post('/change-user', (req, res)=>{
+ app.post('/change-user', (req, res) => {
 	if (req.body.username && req.body.password &&
 		req.body.email && req.body.age && req.body.id) {
 		let newVersion = {
@@ -88,7 +108,7 @@ app.post('/change-user', (req, res)=>{
 });
 
 
-app.post('/create', (req, res) => {
+ app.post('/create', (req, res) => {
 	if (req.body.username && req.body.password && req.body.email && req.body.age) {
 		let newUser = {
 			username: req.body.username,
@@ -101,12 +121,12 @@ app.post('/create', (req, res) => {
 	res.redirect('/');
 });
 
-app.listen(3000);
+ app.listen(3000);
 
-console.log('listening on port 3000');
+ console.log('listening on port 3000');
 
 
-function deleteUserFromFile(id) {
+ function deleteUserFromFile(id) {
 	readFile_changeData_writeDataToFile((data) => {
 		for (let index in data) {
 			if (data[index].id === Number(id)) {
@@ -118,7 +138,7 @@ function deleteUserFromFile(id) {
 }
 
 
-function addUserToFile(newUser) {
+ function addUserToFile(newUser) {
 	readFile_changeData_writeDataToFile((data) => {
 		let lastUser = data[data.length - 1];
 		let highestID = lastUser.id;
@@ -129,8 +149,8 @@ function addUserToFile(newUser) {
 }
 
 
-function saveChangesToUser(id, newVersion){
-	readFile_changeData_writeDataToFile((data)=>{
+ function saveChangesToUser(id, newVersion) {
+	readFile_changeData_writeDataToFile((data) => {
 		for (let index in data) {
 			if (data[index].id === Number(id)) {
 				let changedUser = modifyObject(data[index], newVersion);
@@ -143,7 +163,7 @@ function saveChangesToUser(id, newVersion){
 }
 
 
-function readFile_changeData_writeDataToFile(changeData) {
+ function readFile_changeData_writeDataToFile(changeData) {
 	fs.readFile('./users.json', (err, data) => {
 		if (err) {
 			console.log('Could not read users file. Unexpected error.');
@@ -163,9 +183,11 @@ function readFile_changeData_writeDataToFile(changeData) {
 }
 
 
-function modifyObject(obj, propertiesAndValuesToModify) {
+ function modifyObject(obj, propertiesAndValuesToModify) {
 	for (let prop in propertiesAndValuesToModify) {
 		obj[prop] = propertiesAndValuesToModify[prop];
 	}
 	return obj;
 }
+
+ *********/
