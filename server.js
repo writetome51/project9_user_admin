@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 			res.render('user-manager', {
 				title: 'Users',
 				users: docs,
-				sortOrder:1
+				sortOrder: 1
 			});
 		});
 	});
@@ -37,18 +37,17 @@ app.get('/sort/:header/:sortOrder', (req, res) => {
 		let result = users.find({}).sort(sortObject);
 		result.toArray((err, docs) => {
 			assert.equal(null, err);
-			if (req.params.sortOrder === '1'){
+			if (req.params.sortOrder === '1') {
 				sortOrder = '-1'
 			}
 			res.render('user-manager', {
 				title: 'Users',
 				users: docs,
-				sortOrder:sortOrder
+				sortOrder: sortOrder
 			});
 		});
 	});
 });
-
 
 
 app.get('/delete/:firstName&:lastName&:email', (req, res) => {
@@ -66,29 +65,34 @@ app.get('/delete/:firstName&:lastName&:email', (req, res) => {
 
 
 app.get('/edit/:firstName&:lastName&:email', (req, res) => {
-	getUsersAnd((users) => {
+	getUsersAnd(getUserManipulator(req,res,'edit-user'));
+});
+
+
+app.get('/view/:firstName&:lastName&:email', (req, res) => {
+	getUsersAnd(getUserManipulator(req, res, 'view-user'));
+});
+
+
+function handleEditOrView(editOrView){
+	app.get(`/${editOrView}/:firstName&:lastName&:email`, (req, res) => {
+		getUsersAnd(getUserManipulator(req, res, 'view-user'));
+	});
+
+}
+
+
+function getUserManipulator(req, res, viewName) {
+	return function (users) {
 		users.findOne(
 			{firstName: req.params.firstName, lastName: req.params.lastName, email: req.params.email},
 			function (err, doc) {
 				assert.equal(null, err);
-				res.render('edit-user', {user: doc});
+				res.render(viewName, {user: doc});
 			}
 		);
-	});
-});
-
-
-app.get('/user/:firstName&:lastName&:email', (req, res) => {
-	getUsersAnd((users) => {
-		users.findOne(
-			{firstName: req.params.firstName, lastName: req.params.lastName, email: req.params.email},
-			function (err, doc) {
-				assert.equal(null, err);
-				res.render('user-view', {user: doc});
-			}
-		);
-	});
-});
+	};
+}
 
 
 app.get('/add-user', (req, res) => {
@@ -166,7 +170,7 @@ function getUsersAnd(manipulateUsers) {
 }
 
 
-function getSortObject(header, sortOrder){
+function getSortObject(header, sortOrder) {
 	let sortObject = {};
 	sortObject[header] = Number(sortOrder);
 	return sortObject;
