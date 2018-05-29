@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const http = require('http');
 const bodyParser = require("body-parser");
 const MongoClient = require('mongodb').MongoClient;
 const dbName = 'user_admin';
@@ -23,7 +22,8 @@ app.get('/', (req, res) => {
 			assert.equal(null, err);
 			res.render('user-manager', {
 				title: 'Users',
-				users: docs
+				users: docs,
+				sortOrder:1
 			});
 		});
 	});
@@ -34,13 +34,13 @@ app.get('/sort/:header/:sortOrder', (req, res) => {
 	let sortOrder = '1';
 	let sortObject = getSortObject(req.params.header, req.params.sortOrder);
 	getUsersAnd((users) => {
-		let result = users.find().sort(sortObject);
+		let result = users.find({}).sort(sortObject);
 		result.toArray((err, docs) => {
 			assert.equal(null, err);
-			if (req.params.sortOrder === 'asc'){
-				sortOrder = 'desc'
+			if (req.params.sortOrder === '1'){
+				sortOrder = '-1'
 			}
-			res.render('user-manager-sort', {
+			res.render('user-manager', {
 				title: 'Users',
 				users: docs,
 				sortOrder:sortOrder
@@ -168,6 +168,6 @@ function getUsersAnd(manipulateUsers) {
 
 function getSortObject(header, sortOrder){
 	let sortObject = {};
-	sortObject[header] = sortOrder;
+	sortObject[header] = Number(sortOrder);
 	return sortObject;
 }
