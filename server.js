@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
 
 
 app.get('/', (req, res) => {
-	getUsersAnd((users) => {
+	manipulateUsers((users) => {
 		let result = users.find();
 		result.toArray((err, docs) => {
 			assert.equal(null, err);
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 app.get('/sort/:header/:sortOrder', (req, res) => {
 	let sortOrder = '1';
 	let sortObject = getSortObject(req.params.header, req.params.sortOrder);
-	getUsersAnd((users) => {
+	manipulateUsers((users) => {
 		let result = users.find({}).sort(sortObject);
 		result.toArray((err, docs) => {
 			assert.equal(null, err);
@@ -51,7 +51,7 @@ app.get('/sort/:header/:sortOrder', (req, res) => {
 
 
 app.get('/delete/:firstName&:lastName&:email', (req, res) => {
-	getUsersAnd((users) => {
+	manipulateUsers((users) => {
 		users.deleteOne(
 			{firstName: req.params.firstName, lastName: req.params.lastName, email: req.params.email},
 			function (err, r) {
@@ -64,21 +64,64 @@ app.get('/delete/:firstName&:lastName&:email', (req, res) => {
 });
 
 
-app.get('/edit/:firstName&:lastName&:email', (req, res) => {
-	getUsersAnd(getUserManipulator(req,res,'edit-user'));
+handleEditOrView('edit');
+handleEditOrView('view');
+
+
+app.get('/add-user', (req, res) => {
+	res.render('add-user', {});
 });
 
 
-app.get('/view/:firstName&:lastName&:email', (req, res) => {
-	getUsersAnd(getUserManipulator(req, res, 'view-user'));
-});
-
-
-function handleEditOrView(editOrView){
-	app.get(`/${editOrView}/:firstName&:lastName&:email`, (req, res) => {
-		getUsersAnd(getUserManipulator(req, res, 'view-user'));
+app.post('/change-user', (req, res) => {
+	ifAllUserDataIsProvided_saveUser(req, (modifiedUser)=>{
+		manipulateUsers((users) => {
+			users.updateOne(
+				{
+					lastName: req.body.originalLastName,
+					firstName: req.body.originalFirstName,
+					email: req.body.originalEmail
+				},
+				{$set: modifiedUser}
+			);
+		});
 	});
+	res.redirect('/');
+});
 
+
+app.post('/create', (req, res) => {
+	ifAllUserDataIsProvided_saveUser(req, (newUser) => {
+		manipulateUsers((users) => {
+			users.insertOne(newUser, function (err, r) {
+				assert.equal(null, err);
+				assert.equal(1, r.insertedCount);
+			});
+		});
+	});
+	res.redirect('/');
+});
+
+
+function ifAllUserDataIsProvided_saveUser(req, saveFunction) {
+	if (req.body.firstName && req.body.lastName && req.body.password &&
+		req.body.email && req.body.age) {
+		let userObject = getUserObject(req);
+
+		saveFunction(userObject);
+	}
+}
+
+
+app.listen(3000);
+
+console.log('listening on port 3000');
+
+
+function handleEditOrView(editOrView) {
+	app.get(`/${editOrView}/:firstName&:lastName&:email`, (req, res) => {
+		manipulateUsers(getUserManipulator(req, res, `${editOrView}-user`));
+	});
 }
 
 
@@ -95,63 +138,7 @@ function getUserManipulator(req, res, viewName) {
 }
 
 
-app.get('/add-user', (req, res) => {
-	res.render('add-user', {});
-});
-
-
-app.post('/change-user', (req, res) => {
-	if (req.body.firstName && req.body.lastName && req.body.password &&
-		req.body.email && req.body.age) {
-		let newVersion = {
-			lastName: req.body.lastName,
-			firstName: req.body.firstName,
-			password: req.body.password,
-			email: req.body.email,
-			age: Number(req.body.age)
-		};
-		getUsersAnd((users) => {
-			users.updateOne(
-				{
-					lastName: req.body.originalLastName,
-					firstName: req.body.originalFirstName,
-					email: req.body.originalEmail
-				},
-				{$set: newVersion}
-			);
-		});
-	}
-	res.redirect('/');
-});
-
-
-app.post('/create', (req, res) => {
-	if (req.body.firstName && req.body.lastName && req.body.password &&
-		req.body.email && req.body.age) {
-		let newUser = {
-			lastName: req.body.lastName,
-			firstName: req.body.firstName,
-			password: req.body.password,
-			email: req.body.email,
-			age: Number(req.body.age)
-		};
-		getUsersAnd((users) => {
-			users.insertOne(newUser, function (err, r) {
-				assert.equal(null, err);
-				assert.equal(1, r.insertedCount);
-			});
-		})
-	}
-	res.redirect('/');
-});
-
-
-app.listen(3000);
-
-console.log('listening on port 3000');
-
-
-function getUsersAnd(manipulateUsers) {
+function manipulateUsers(manipulator) {
 	MongoClient.connect(
 		url, {useNewUrlParser: true},
 
@@ -162,7 +149,7 @@ function getUsersAnd(manipulateUsers) {
 			const db = client.db();
 			const users = db.collection('users');
 
-			manipulateUsers(users);
+			manipulator(users);
 
 			client.close();
 		}
@@ -174,4 +161,15 @@ function getSortObject(header, sortOrder) {
 	let sortObject = {};
 	sortObject[header] = Number(sortOrder);
 	return sortObject;
+}
+
+
+function getUserObject(req) {
+	return {
+		lastName: req.body.lastName,
+		firstName: req.body.firstName,
+		password: req.body.password,
+		email: req.body.email,
+		age: Number(req.body.age)
+	};
 }
