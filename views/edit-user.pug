@@ -4,9 +4,14 @@ block bodyContent
 
     form(method='POST', action='/change-user')
         div
-            input(id='id', name='id', required, value=user.id, hidden)
-            label(for='username') Username
-            input(id='username', name='username', required, value=user.username)
+            input(name='originalFirstName', value=user.firstName, hidden)
+            input(name='originalLastName', value=user.lastName, hidden)
+            input(name='originalEmail', value=user.email, hidden)
+            label(for='firstName') First Name
+            input(id='firstName', name='firstName', required, value=user.firstName)
+        div
+            label(for='lastName') Last Name
+            input(id='lastName', name='lastName', required, value=user.lastName)
         div
             label(for='password') Password
             input(type='password', id='password', name='password' , required, value=user.password)

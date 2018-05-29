@@ -51,19 +51,21 @@ app.get('/', (req, res) => {
 
 
 app.get('/delete/:firstName&:lastName&:email', (req, res) => {
-	deleteUserFromFile(req.params._id);
+
 	res.redirect('/');
 });
 
 
-app.get('/edit/:_id', (req, res) => {
-	data = JSON.parse(data.toString());
-
-	for (let index in data) {
-		if (data[index].email === String(req.params.email)) {
-			res.render('edit-user', {user: data[index]});
-		}
-	}
+app.get('/edit/:firstName&:lastName&:email', (req, res) => {
+	getUsersAnd((users) => {
+		users.findOne(
+			{firstName: req.params.firstName, lastName: req.params.lastName, email: req.params.email},
+			function (err, doc) {
+				assert.equal(null, err);
+				res.render('edit-user', {user: doc});
+			}
+		);
+	});
 });
 
 
@@ -77,14 +79,6 @@ app.get('/user/:firstName&:lastName&:email', (req, res) => {
 			}
 		);
 	});
-
-	/****
-	 for (let index in data) {
-		if (data[index].email === Number(req.params.email)) {
-
-		}
-	}
-	 *****/
 });
 
 
@@ -103,8 +97,16 @@ app.post('/change-user', (req, res) => {
 			email: req.body.email,
 			age: Number(req.body.age)
 		};
-		users.updateOne({email: ''}, {$set: newVersion});
-		saveChangesToUser(req.body.id, newVersion);
+		getUsersAnd((users)=>{
+			users.updateOne(
+				{
+					lastName: req.body.originalLastName,
+					firstName: req.body.originalFirstName,
+					email: req.body.originalEmail
+				},
+				{$set: newVersion}
+			);
+		});
 	}
 	res.redirect('/');
 });
