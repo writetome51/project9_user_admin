@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require("body-parser");
 const MongoClient = require('mongodb').MongoClient;
-const dbName = 'user_admin';
+const dbName = 'user-admin';
 const url = `mongodb://localhost:27017/${dbName}`;
 const assert = require('assert');
 

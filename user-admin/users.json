@@ -1,0 +1,115 @@
+{ 
+    "_id" : ObjectId("5b0c7665f68f162a3b66ba00"), 
+    "firstName" : "Benny", 
+    "lastName" : "Blanco", 
+    "password" : "abcdefgh", 
+    "email" : "ben@somesite.com", 
+    "age" : NumberInt(25), 
+    "username" : "hmmm"
+}
+{ 
+    "_id" : ObjectId("5b0c7665f68f162a3b66ba03"), 
+    "firstName" : "Willy", 
+    "lastName" : "Ramos", 
+    "password" : "poiuytre", 
+    "email" : "willy@examplesite.com", 
+    "age" : NumberInt(47), 
+    "username" : "hmmm"
+}
+{ 
+    "_id" : ObjectId("5b0c7665f68f162a3b66ba08"), 
+    "firstName" : "Shawn", 
+    "lastName" : "Cawnnry", 
+    "password" : "0000000007", 
+    "email" : "original001@scotland.uk", 
+    "age" : NumberInt(81), 
+    "username" : "hmmm"
+}
+{ 
+    "_id" : ObjectId("5b0cc5b173ddf1167c03c5cb"), 
+    "lastName" : "Flamenco", 
+    "firstName" : "Fanny", 
+    "password" : "lalalalalala", 
+    "email" : "fflamenco@gmail.com", 
+    "age" : NumberInt(43)
+}
+{ 
+    "_id" : ObjectId("5b0cc78773ddf1167c03c5cf"), 
+    "lastName" : "Flynt", 
+    "firstName" : "Larry", 
+    "password" : "dirtyslimebag", 
+    "email" : "larry@flyntpublications.com", 
+    "age" : NumberInt(72)
+}
+{ 
+    "_id" : ObjectId("5b0cc7e573ddf1167c03c5d0"), 
+    "lastName" : "Windu", 
+    "firstName" : "Mace", 
+    "password" : "jediforever", 
+    "email" : "mace@windu.org", 
+    "age" : NumberInt(1000)
+}
+{ 
+    "_id" : ObjectId("5b0cc80973ddf1167c03c5d1"), 
+    "lastName" : "Fett", 
+    "firstName" : "Boba", 
+    "password" : "bobafett!!!!", 
+    "email" : "bountyhunter@bobafett.com", 
+    "age" : NumberInt(50)
+}
+{ 
+    "_id" : ObjectId("5b0cc8c773ddf1167c03c5d2"), 
+    "lastName" : "yoda", 
+    "firstName" : "yoda", 
+    "password" : "jedimaster", 
+    "email" : "yoda@dagobah.com", 
+    "age" : NumberInt(5000)
+}
+{ 
+    "_id" : ObjectId("5b0cde9e54a1da2086cd33dc"), 
+    "lastName" : "Crothers", 
+    "firstName" : "Scatman", 
+    "password" : "jazzman", 
+    "email" : "scatcrothers@shining.org", 
+    "age" : NumberInt(88)
+}
+{ 
+    "_id" : ObjectId("5b0cdfd208ddc4214af04b46"), 
+    "lastName" : "Cruise", 
+    "firstName" : "Tom", 
+    "password" : "ilovexenu", 
+    "email" : "tomcruise@scientology.org", 
+    "age" : NumberInt(22)
+}
+{ 
+    "_id" : ObjectId("5b0cdff908ddc4214af04b47"), 
+    "lastName" : "Prepon", 
+    "firstName" : "Laura", 
+    "password" : "laurapreppon", 
+    "email" : "laura@that70sshow.com", 
+    "age" : NumberInt(36)
+}
+{ 
+    "_id" : ObjectId("5b0ce02408ddc4214af04b48"), 
+    "lastName" : "Spielberg", 
+    "firstName" : "Steven", 
+    "password" : "blahblah", 
+    "email" : "stevenspiel@universal.com", 
+    "age" : NumberInt(74)
+}
+{ 
+    "_id" : ObjectId("5b0ce08408ddc4214af04b49"), 
+    "lastName" : "Jackson", 
+    "firstName" : "Peter", 
+    "password" : "lordoftherings", 
+    "email" : "petejack@newzealand.org", 
+    "age" : NumberInt(55)
+}
+{ 
+    "_id" : ObjectId("5b0ce0ad08ddc4214af04b4a"), 
+    "lastName" : "Simpson", 
+    "firstName" : "Homer", 
+    "password" : "donutsaregood", 
+    "email" : "hsimpson@nuclearpowerplant.com", 
+    "age" : NumberInt(40)
+}
