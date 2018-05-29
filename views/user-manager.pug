@@ -19,9 +19,9 @@ block bodyContent
                 td=val.email
                 td=val.age
                 td
-                    a(class="td-link",  href=`user/${val.email}`)="View"
-                    a(class="td-link",  href=`edit/${val.email}`)="Edit"
-                    a(class="td-link",  href=`delete/${val.email}`)="Delete"
+                    a(class="td-link",  href=`user/${val.firstName}&${val.lastName}&${val.email}`)="View"
+                    a(class="td-link",  href=`edit/${val.firstName}&${val.lastName}&${val.email}`)="Edit"
+                    a(class="td-link", href=`delete/${val.firstName}&${val.lastName}&${val.email}`)="Delete"
 
     div(class="needs-margin")
         a(class="needs-margin", href=`/add-user`)="Add User"

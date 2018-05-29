@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const http = require('http');
 const bodyParser = require("body-parser");
 const MongoClient = require('mongodb').MongoClient;
@@ -20,7 +19,7 @@ const assert = require('assert');
 
 		const users = db.collection('users');
 
-		users.updateOne({},{$set:{"username":"hmmm"}});
+
 
 		client.close();
 	}
@@ -38,7 +37,7 @@ app.use(bodyParser.urlencoded({
 
 
 app.get('/', (req, res) => {
-	getUsersAnd((users)=>{
+	getUsersAnd((users) => {
 		let result = users.find();
 		result.toArray((err, docs) => {
 			assert.equal(null, err);
@@ -51,7 +50,87 @@ app.get('/', (req, res) => {
 });
 
 
-function getUsersAnd(manipulateUsers){
+app.get('/delete/:firstName&:lastName&:email', (req, res) => {
+	deleteUserFromFile(req.params._id);
+	res.redirect('/');
+});
+
+
+app.get('/edit/:_id', (req, res) => {
+	data = JSON.parse(data.toString());
+
+	for (let index in data) {
+		if (data[index].email === String(req.params.email)) {
+			res.render('edit-user', {user: data[index]});
+		}
+	}
+});
+
+
+app.get('/user/:firstName&:lastName&:email', (req, res) => {
+	getUsersAnd((users) => {
+		users.findOne(
+			{firstName: req.params.firstName, lastName: req.params.lastName, email: req.params.email},
+			function (err, doc) {
+				assert.equal(null, err);
+				res.render('user-view', {user: doc});
+			}
+		);
+	});
+
+	/****
+	 for (let index in data) {
+		if (data[index].email === Number(req.params.email)) {
+
+		}
+	}
+	 *****/
+});
+
+
+app.get('/add-user', (req, res) => {
+	res.render('add-user', {});
+});
+
+
+app.post('/change-user', (req, res) => {
+	if (req.body.firstName && req.body.lastName && req.body.password &&
+		req.body.email && req.body.age) {
+		let newVersion = {
+			lastName: req.body.lastName,
+			firstName: req.body.firstName,
+			password: req.body.password,
+			email: req.body.email,
+			age: Number(req.body.age)
+		};
+		users.updateOne({email: ''}, {$set: newVersion});
+		saveChangesToUser(req.body.id, newVersion);
+	}
+	res.redirect('/');
+});
+
+
+app.post('/create', (req, res) => {
+	if (req.body.firstName && req.body.lastName && req.body.password &&
+		req.body.email && req.body.age) {
+		let newUser = {
+			lastName: req.body.lastName,
+			firstName: req.body.firstName,
+			password: req.body.password,
+			email: req.body.email,
+			age: Number(req.body.age)
+		};
+		addUserToFile(newUser);
+	}
+	res.redirect('/');
+});
+
+app.listen(3000);
+
+console.log('listening on port 3000');
+
+
+function getUsersAnd(manipulateUsers) {
 	MongoClient.connect(
 		url, {useNewUrlParser: true},
 
@@ -70,109 +149,34 @@ function getUsersAnd(manipulateUsers){
 }
 
 
-app.get('/delete/:email', (req, res) => {
-	deleteUserFromFile(req.params.email);
-	res.redirect('/');
-});
-
-
-app.get('/edit/:email', (req, res) => {
-	data = JSON.parse(data.toString());
-
-	for (let index in data) {
-		if (data[index].email === String(req.params.email)) {
-			res.render('edit-user', {user: data[index]});
-		}
-	}
-});
-
-
-app.get('/user/:email', (req, res) => {
-		data = JSON.parse(data.toString());
-
-		for (let index in data) {
-			if (data[index].email === Number(req.params.email)) {
-				res.render('user-view', {user: data[index]});
-			}
-		}
-});
-
-
-app.get('/add-user', (req, res) => {
-	res.render('add-user', {});
-});
-
-
-app.post('/change-user', (req, res) => {
-	if (req.body.firstName && req.body.lastName  && req.body.password &&
-		req.body.email && req.body.age) {
-		let newVersion = {
-			lastName:req.body.lastName,
-			firstName:req.body.firstName,
-			password: req.body.password,
-			email: req.body.email,
-			age: Number(req.body.age)
-		};
-		saveChangesToUser(req.body.id, newVersion);
-	}
-	res.redirect('/');
-});
-
-
-app.post('/create', (req, res) => {
-	if (req.body.firstName && req.body.lastName  && req.body.password &&
-		req.body.email && req.body.age) {
-		let newUser = {
-			lastName:req.body.lastName,
-			firstName:req.body.firstName,
-			password: req.body.password,
-			email: req.body.email,
-			age: Number(req.body.age)
-		};
-		addUserToFile(newUser);
-	}
-	res.redirect('/');
-});
-
-app.listen(3000);
-
-console.log('listening on port 3000');
-
-
 function deleteUserFromFile(id) {
-	readFile_changeData_writeDataToFile((data) => {
-		for (let index in data) {
-			if (data[index].id === Number(id)) {
-				data.splice(index, 1); // removes user.
-			}
+	for (let index in data) {
+		if (data[index].id === Number(id)) {
+			data.splice(index, 1); // removes user.
 		}
-		return data;
-	});
+	}
+	return data;
 }
 
 
 function addUserToFile(newUser) {
-	readFile_changeData_writeDataToFile((data) => {
-		let lastUser = data[data.length - 1];
-		let highestID = lastUser.id;
-		newUser['id'] = highestID + 1;
-		data.push(newUser);
-		return data;
-	});
+	let lastUser = data[data.length - 1];
+	let highestID = lastUser.id;
+	newUser['id'] = highestID + 1;
+	data.push(newUser);
+	return data;
 }
 
 
 function saveChangesToUser(id, newVersion) {
-	readFile_changeData_writeDataToFile((data) => {
-		for (let index in data) {
-			if (data[index].id === Number(id)) {
-				let changedUser = modifyObject(data[index], newVersion);
-				data.splice(index, 1);
-				data.splice(index, 0, changedUser);
-				return data;
-			}
+	for (let index in data) {
+		if (data[index].id === Number(id)) {
+			let changedUser = modifyObject(data[index], newVersion);
+			data.splice(index, 1);
+			data.splice(index, 0, changedUser);
+			return data;
 		}
-	});
+	}
 }
 
 
