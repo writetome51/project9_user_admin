@@ -51,7 +51,15 @@ app.get('/', (req, res) => {
 
 
 app.get('/delete/:firstName&:lastName&:email', (req, res) => {
-
+	getUsersAnd((users) => {
+		users.deleteOne(
+			{firstName: req.params.firstName, lastName: req.params.lastName, email: req.params.email},
+			function (err, r) {
+				assert.equal(null, err);
+				assert.equal(1, r.deletedCount);
+			}
+		);
+	});
 	res.redirect('/');
 });
 
@@ -97,7 +105,7 @@ app.post('/change-user', (req, res) => {
 			email: req.body.email,
 			age: Number(req.body.age)
 		};
-		getUsersAnd((users)=>{
+		getUsersAnd((users) => {
 			users.updateOne(
 				{
 					lastName: req.body.originalLastName,
@@ -148,16 +156,6 @@ function getUsersAnd(manipulateUsers) {
 			client.close();
 		}
 	);
-}
-
-
-function deleteUserFromFile(id) {
-	for (let index in data) {
-		if (data[index].id === Number(id)) {
-			data.splice(index, 1); // removes user.
-		}
-	}
-	return data;
 }
 
 
