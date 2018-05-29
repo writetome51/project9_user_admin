@@ -1,0 +1,24 @@
+First unzip the compressed file.
+Then start running an instance of mongodb.
+Then import the data into your mongodb connection.  The required mongodb collection
+is in user-admin/users.json .  Make sure you create a database called exactly 'user-admin' .
+Import the users.json file so that it becomes a collection called 'users'.
+
+I found the easiest way to do this was using Studio3T: on the far left side
+of the Studio3T window, where it shows your open connection and all the dbs inside
+it, right-click on the connection icon and choose Import...
+Then choose JSON-mongo shell and click Next.
+Choose the correct file to import.  It will assume you want to create a new db
+called 'user-admin' with a collection called 'users'.  Keep following the prompts
+until the new db is created.
+
+This app assumes your hostname is localhost and the mongodb port is 27017.
+
+Don't forget to run npm install.
+
+Now you should be ready to run the app.
+In the terminal, cd to the app directory.
+Then enter 'node server.js' .  Then in your browser go to: 'http://localhost:3000'
+
+From that point on, you only need to use the browser.
+You can sort the user data by clicking on the table headers. They're linked.
