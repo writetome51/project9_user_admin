@@ -6,15 +6,15 @@ block bodyContent
     table
         tr
             th
-                a(href=`sort/lastname/1`)='Last Name'
+                a(href=`sort/lastname/${sortOrder}`)='Last Name'
             th
-                a(href=`sort/firstname/1`)='First Name'
+                a(href=`sort/firstname/${sortOrder}`)='First Name'
             th
-                a(href=`sort/password/1`)='Password'
+                a(href=`sort/password/${sortOrder}`)='Password'
             th
-                a(href=`sort/email/1`)='Email'
+                a(href=`sort/email/${sortOrder}`)='Email'
             th
-                a(href=`sort/age/1`)='Age'
+                a(href=`sort/age/${sortOrder}`)='Age'
             th='-----------'
         each val in users
             tr

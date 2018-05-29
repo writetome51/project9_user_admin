@@ -7,26 +7,6 @@ const dbName = 'user_admin';
 const url = `mongodb://localhost:27017/${dbName}`;
 const assert = require('assert');
 
-/*********
- MongoClient.connect(
- url, {useNewUrlParser: true},
-
- function (err, client) { // client is instance of MongoClient
-		assert.equal(null, err);
-		console.log("Connected successfully to database.");
-
-		const db = client.db();
-
-		const users = db.collection('users');
-
-
-
-		client.close();
-	}
- );
- **********/
-
-
 let app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -48,6 +28,27 @@ app.get('/', (req, res) => {
 		});
 	});
 });
+
+
+app.get('/sort/:header/:sortOrder', (req, res) => {
+	let sortOrder = '1';
+	let sortObject = getSortObject(req.params.header, req.params.sortOrder);
+	getUsersAnd((users) => {
+		let result = users.find().sort(sortObject);
+		result.toArray((err, docs) => {
+			assert.equal(null, err);
+			if (req.params.sortOrder === 'asc'){
+				sortOrder = 'desc'
+			}
+			res.render('user-manager-sort', {
+				title: 'Users',
+				users: docs,
+				sortOrder:sortOrder
+			});
+		});
+	});
+});
+
 
 
 app.get('/delete/:firstName&:lastName&:email', (req, res) => {
@@ -130,10 +131,16 @@ app.post('/create', (req, res) => {
 			email: req.body.email,
 			age: Number(req.body.age)
 		};
-		addUserToFile(newUser);
+		getUsersAnd((users) => {
+			users.insertOne(newUser, function (err, r) {
+				assert.equal(null, err);
+				assert.equal(1, r.insertedCount);
+			});
+		})
 	}
 	res.redirect('/');
 });
+
 
 app.listen(3000);
 
@@ -159,30 +166,8 @@ function getUsersAnd(manipulateUsers) {
 }
 
 
-function addUserToFile(newUser) {
-	let lastUser = data[data.length - 1];
-	let highestID = lastUser.id;
-	newUser['id'] = highestID + 1;
-	data.push(newUser);
-	return data;
-}
-
-
-function saveChangesToUser(id, newVersion) {
-	for (let index in data) {
-		if (data[index].id === Number(id)) {
-			let changedUser = modifyObject(data[index], newVersion);
-			data.splice(index, 1);
-			data.splice(index, 0, changedUser);
-			return data;
-		}
-	}
-}
-
-
-function modifyObject(obj, propertiesAndValuesToModify) {
-	for (let prop in propertiesAndValuesToModify) {
-		obj[prop] = propertiesAndValuesToModify[prop];
-	}
-	return obj;
+function getSortObject(header, sortOrder){
+	let sortObject = {};
+	sortObject[header] = sortOrder;
+	return sortObject;
 }
